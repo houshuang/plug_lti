@@ -27,6 +27,6 @@ defmodule PlugLti.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:plug, "~> 0.11.0"}]
+    [{:plug, "> 0.12.0"}]
   end
 end

@@ -36,7 +36,7 @@ defmodule PlugLti do
   def call(conn, _) do
     try do
       signature = conn 
-        |> fetch_params
+        |> fetch_query_params
         |> ensure_has_signature
         |> signature_base_string
         |> hmac_signature
