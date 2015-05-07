@@ -7,10 +7,8 @@ It has only been tested on EdX, but I'm happy to accept pull requests for other 
 
 If you want to use this in Phoenix, use add `:plug PlugLti` in the pipeline for the relevant pages, and add the LTI secret to the config.exs file:
 
-'''
-:config LtiSecret,
-    :lti_secret: "secret"
-'''
+    :config LtiSecret,
+        :lti_secret: "secret"
 
 If the signature matches, the request will be passed through and can be handled by you as normally. If not, the plug will send a response of Forbidden, with the text "Missing or mismatched OAuth signature in header", and log an info message with the reason (either missing signature, or signature mismatch).
 
