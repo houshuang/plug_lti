@@ -35,14 +35,14 @@ defmodule PlugLti do
 
   def call(conn, _) do
     try do
-      sign = conn 
+      signature = conn 
         |> fetch_params
         |> ensure_has_signature
         |> signature_base_string
         |> hmac_signature
       
       # assert that signature provided equals signature calculated
-      if sign != conn["params"]["oauth_signature"], do:
+      if signature != conn["params"]["oauth_signature"], do:
         raise SignatureMismatch
       conn
 
