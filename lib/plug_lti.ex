@@ -48,6 +48,7 @@ defmodule PlugLti do
 
     rescue 
       e in [NoSignature, SignatureMismatch] -> 
+      Logger.info "PlugLti: " <> Exception.message(e)
       conn
         |> put_resp_header("content-type", "text/plain; charset=utf-8")
         |> send_resp(Plug.Conn.Status.code(:forbidden), 
