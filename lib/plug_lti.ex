@@ -42,12 +42,13 @@ defmodule PlugLti do
         |> hmac_signature
       
       # assert that signature provided equals signature calculated
-      if signature != conn["params"]["oauth_signature"], do:
+      if signature != conn.params["oauth_signature"], do:
         raise SignatureMismatch
       conn
 
     rescue 
-      e in [NoSignature, SignatureMismatch] -> conn
+      e in [NoSignature, SignatureMismatch] -> 
+      conn
         |> put_resp_header("content-type", "text/plain; charset=utf-8")
         |> send_resp(Plug.Conn.Status.code(:forbidden), 
           "Missing or mismatched OAuth signature in header")
@@ -56,7 +57,7 @@ defmodule PlugLti do
     end
   end
 
-  def ensure_has_signature(conn = %Plug.Conn{:params => %{:oauth_signature => _}}), do: conn
+  def ensure_has_signature(conn = %Plug.Conn{params: %{"oauth_signature" => _}}), do: conn
   def ensure_has_signature(_), do: raise NoSignature
   
   def hmac_signature(str) do
@@ -69,7 +70,6 @@ defmodule PlugLti do
   def signature_base_string(conn) do
     method = "POST"
     url = req_url(conn)
-    IO.puts(url)
     params = proc_params(conn.params)
 
     [method, url, params] 
