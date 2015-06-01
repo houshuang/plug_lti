@@ -15,6 +15,9 @@ defmodule PlugLti do
 
   require Logger
 
+  defmodule MissingSecret, do:
+    defexception message: "no valid signature loaded from config file"
+
   defmodule SignatureMismatch, do:
     defexception message: "provided oauth signature did not match calculated signature"
 
@@ -56,6 +59,11 @@ defmodule PlugLti do
         |> send_resp(Plug.Conn.Status.code(:forbidden), 
           "Missing or mismatched OAuth signature in header")
         |> halt
+
+      e in [MissingSecret] -> 
+        Logger.info "PlugLti: " <> Exception.message(e)
+        halt(conn)
+
      e -> raise e
     end
   end
@@ -65,7 +73,7 @@ defmodule PlugLti do
   
   def hmac_signature(str) do
     secret = Application.get_env(:plug_lti, :lti_secret)
-
+    if !is_binary(secret), do: raise MissingSecret
     :crypto.hmac(:sha, secret <> "&", str)
       |> Base.encode64
   end
