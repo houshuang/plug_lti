@@ -13,6 +13,8 @@ defmodule PlugLti do
   @behaviour Plug
   import Plug.Conn
 
+  require Logger
+
   defmodule SignatureMismatch, do:
     defexception message: "provided oauth signature did not match calculated signature"
 
