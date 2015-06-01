@@ -44,6 +44,7 @@ defmodule PlugLti do
 
   def call(conn, _) do
     if Application.get_env(:plug_lti, :plug_disabled) do
+      Logger.warn("LTI signature verification disabled")
       conn
     else
       verify_signature(conn)
