@@ -30,7 +30,7 @@ defmodule PlugLti do
 
   defp req_url(%Plug.Conn{scheme: scheme, host: host, port: port} = conn) do
     if env = Application.get_env(:plug_lti, :base_url) do
-      env
+      "#{env}#{full_path(conn)}"
     else
       port_repr = case {scheme, port} do
         {:http, 80} -> ""
