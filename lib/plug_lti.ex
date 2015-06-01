@@ -29,13 +29,17 @@ defmodule PlugLti do
   def init([]), do: []
 
   defp req_url(%Plug.Conn{scheme: scheme, host: host, port: port} = conn) do
-    port_repr = case {scheme, port} do
-      {:http, 80} -> ""
-      {:https, 443} -> ""
-      {_, port} -> ":#{port}"
-    end
+    if env = Application.get_env(:plug_lti, :base_url) do
+      env
+    else
+      port_repr = case {scheme, port} do
+        {:http, 80} -> ""
+        {:https, 443} -> ""
+        {_, port} -> ":#{port}"
+      end
 
-    "#{scheme}://#{host}#{port_repr}#{full_path(conn)}"
+      "#{scheme}://#{host}#{port_repr}#{full_path(conn)}"
+    end
   end
 
   def call(conn, _) do
