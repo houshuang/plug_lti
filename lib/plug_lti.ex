@@ -43,6 +43,14 @@ defmodule PlugLti do
   end
 
   def call(conn, _) do
+    if Application.get_env(:plug_lti, :plug_disabled) do
+      conn
+    else
+      verify_signature(conn)
+    end
+  end
+
+  def verify_signature(conn) do
     try do
       signature = conn 
         |> fetch_query_params
