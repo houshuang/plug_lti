@@ -7,6 +7,10 @@ defmodule PlugLti do
       
       config :plug_lti,
         lti_secret: "secret"
+
+  Note that LTI requests are received as POST, and this plug transforms them into GET.
+  This is to work better with the protect_from_forgery plug, which otherwise would
+  except an initial LTI request to have an csrf token.
   """
 
   use Behaviour
@@ -60,9 +64,9 @@ defmodule PlugLti do
         |> hmac_signature
       
       # assert that signature provided equals signature calculated
-      if signature != conn.params["oauth_signature"], do:
-        raise SignatureMismatch
-      conn
+      if signature != conn.params["oauth_signature"], do: raise SignatureMismatch
+
+      %{conn | method: "GET"}
 
     rescue 
       e in [NoSignature, SignatureMismatch] -> 
