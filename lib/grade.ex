@@ -28,24 +28,25 @@ defmodule Grade do
   end
 
   def params do
-
-%{"oauth_consumer_key"=>"test", "oauth_nonce"=>"3RrRU3FUwTxHEo35MwGKoB7BeUIZPUcst3ufzvo", "oauth_signature_method"=>"HMAC-SHA1", "oauth_timestamp" => "1434880106", "oauth_version" =>"1.0"}
-    |> Enum.map(fn {x,y} -> {x, URI.decode_www_form(y) } end )
-    |> Enum.into(%{})
-    |> Map.put("oauth_body_hash", :crypto.hash(:sha, @contents) |> Base.encode64)
-    # %{"oauth_consumer_key"     => "test",
-    #   "oauth_nonce"            => nonce,
-    #   "oauth_signature_method" => "HMAC-SHA1",
-    #   "oauth_timestamp"        => timestamp,
-    #   "oauth_version"          => "1.0",
+    %{
+      "oauth_consumer_key"     => "test",
+      "oauth_signature_method" => "HMAC-SHA1",
+      "oauth_version"          => "1.0",
+      "oauth_body_hash"        => :crypto.hash(:sha, @contents) |> Base.encode64,
+      "oauth_timestamp"        => timestamp
+    }
   end
 
   def timestamp do
     {mgsec, sec, _mcs} = :os.timestamp
 
     mgsec * 1_000_000 + sec
+    |> Integer.to_string
   end
   def nonce do
-    :crypto.rand_bytes(32) |> Base.encode64
+    :random.seed(:os.timestamp)
+    num = :random.uniform(999999) |> Integer.to_string
+    manynums = num <> num <> num <> num <> num <> num
+    String.ljust(manynums, 32, ?0)
   end
 end
