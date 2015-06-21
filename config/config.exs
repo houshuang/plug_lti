@@ -3,4 +3,5 @@
 use Mix.Config
 
 config :plug_lti,
+  lti_key:    "test",
   lti_secret: "secret"
