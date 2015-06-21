@@ -14,7 +14,7 @@ defmodule PlugLti.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:logger, :httpoison]]
   end
 
   # Dependencies can be Hex packages:
@@ -27,6 +27,7 @@ defmodule PlugLti.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:plug, "> 0.12.0"}]
+    [{:plug, "> 0.12.0"},
+    {:httpoison, "~> 0.7"}]
   end
 end

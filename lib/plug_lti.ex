@@ -91,10 +91,7 @@ defmodule PlugLti do
   def hmac_signature(str) do
     secret = Application.get_env(:plug_lti, :lti_secret)
     if !is_binary(secret), do: raise MissingSecret
-    :crypto.hmac(:sha, secret <> "&", str)
-      |> Base.encode64
-  end
-
+    :crypto.hmac(:sha, secret <> "&", str) |> Base.encode64 end 
   def signature_base_string(conn) do
     method = "POST"
     url = req_url(conn)
@@ -103,15 +100,22 @@ defmodule PlugLti do
     [method, url, params] 
       |> Enum.map(&(URI.encode_www_form/1))
       |> Enum.join("&")
+      |> IO.inspect
   end
 
   def proc_params(params) do
     params
       |> Enum.filter(&(!Enum.member?(@exclude_params, elem(&1, 0))))
-      |> Enum.sort 
       |> Enum.map(fn({param, value}) -> 
-          "#{URI.encode_www_form( param )}=#{URI.encode_www_form( value )}" 
+          "#{URI.encode_www_form( ensure_string(param) )}=#{
+            URI.encode_www_form( ensure_string(value ))}" 
         end) 
+      |> Enum.sort 
       |> Enum.join("&")
   end
+
+  def ensure_string(x) when is_integer(x), do: Integer.to_string(x)
+  def ensure_string(x) when is_float(x), do: Float.to_string(x)
+  def ensure_string(x) when is_binary(x), do: x
+
 end 

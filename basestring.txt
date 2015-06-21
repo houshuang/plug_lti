@@ -1,0 +1,10 @@
+mine:
+POST&https%3A%2F%2Fedge.edx.org%2Fcourses%2Fcourse-v1%3AUniversity_of_TorontoX%2BINQ101x%2B2T2015%2Fxblock%2Fblock-v1%3AUniversity_of_TorontoX%2BINQ101x%2B2T2015%2Btype%40lti%2Bblock%406aead9666027438ca67bd5fe031c8f47%2Fhandler_noauth%2Fgrade_handler&oauth_body_hash%3DtQuLN9cw7%252BckhI%252BgDqvP%252BZYCs7Y%253D%26oauth_consumer_key%3Dtest%26oauth_nonce%3D3RrRU3FUwTxHEo35MwGKoB7BeUIZPUcst3ufzvo%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1434880106%26oauth_version%3D1.0
+
+ruby:
+POST&https%3A%2F%2Fedge.edx.org%2Fcourses%2Fcourse-v1%3AUniversity_of_TorontoX%2BINQ101x%2B2T2015%2Fxblock%2Fblock-v1%3AUniversity_of_TorontoX%2BINQ101x%2B2T2015%2Btype%40lti%2Bblock%406aead9666027438ca67bd5fe031c8f47%2Fhandler_noauth%2Fgrade_handler&oauth_body_hash%3DtQuLN9cw7%252BckhI%252BgDqvP%252BZYCs7Y%253D%26oauth_consumer_key%3Dtest%26oauth_nonce%3D3RrRU3FUwTxHEo35MwGKoB7BeUIZPUcst3ufzvo%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1434880106%26oauth_version%3D1.0
+
+signature mine:
+7Lg63xiwzKPfWXj4HG1PtKFywoQ
+
+7Lg63xiwzKPfWXj4HG1PtKFywoQ%3D
