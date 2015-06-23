@@ -1,15 +1,27 @@
-defmodule Grade do
-  import PlugLti
-  @contents String.strip(File.read!("request.txt"))
+defmodule PlugLti.Grade do
+  @moduledoc """
+  """
+
+  def get_call_info(%{body_params: params}) do
+    case params do
+      %{"lis_result_sourcedid" => id,
+        "lis_outcome_service_url" => url} -> {:ok, {url, id}}
+      _ -> :missing
+    end
+  end
+
+  def call({url, sourcedId}, score) do
+    call(url, sourcedId, score)
+  end
 
   def call(url, sourcedId, score) do
     contents = gen_contents(sourcedId, score)
     param_base = params(contents) 
 
-    signature = ["POST", url, param_base |> proc_params] 
+    signature = ["POST", url, param_base |> PlugLti.proc_params] 
       |> Enum.map(&(URI.encode_www_form/1))
       |> Enum.join("&")
-      |> hmac_signature
+      |> PlugLti.hmac_signature
 
     param_base = Map.put(param_base, "oauth_signature", signature)
 
@@ -17,10 +29,17 @@ defmodule Grade do
     |> Enum.map(fn {k, v} -> "#{k}=\"#{param_value(v)}\"" end)
     |> Enum.join(",")
 
-    HTTPoison.request(:post, url , contents, 
+    case HTTPoison.request(:post, url , contents, 
       [{:Accept, "application/xml"}, {:Authorization, 
-        "OAuth realm=\"\"," <> paramstr}])
-    |> IO.inspect # todo - parse response
+        "OAuth realm=\"\"," <> paramstr}]) do
+      {:ok, %{body: body}} -> 
+        if String.contains?(body, "<imsx_codeMajor>success</imsx_codeMajor>") do
+          :ok
+        else
+          {:error, body}
+        end
+      err -> {:error, err}
+    end
   end
 
   def param_value(x) do
