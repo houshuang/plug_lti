@@ -100,7 +100,6 @@ defmodule PlugLti do
     [method, url, params] 
       |> Enum.map(&(URI.encode_www_form/1))
       |> Enum.join("&")
-      |> IO.inspect
   end
 
   def proc_params(params) do
