@@ -15,7 +15,7 @@ defmodule PlugLti do
 
   use Behaviour
   @behaviour Plug
-  import Plug.Conn
+  alias Plug.Conn
 
   require Logger
 
@@ -34,7 +34,7 @@ defmodule PlugLti do
 
   defp req_url(%Plug.Conn{scheme: scheme, host: host, port: port} = conn) do
     if env = Application.get_env(:plug_lti, :base_url) do
-      "#{env}#{full_path(conn)}"
+      "#{env}#{conn.request_path}"
     else
       port_repr = case {scheme, port} do
         {:http, 80} -> ""
@@ -42,7 +42,7 @@ defmodule PlugLti do
         {_, port} -> ":#{port}"
       end
 
-      "#{scheme}://#{host}#{port_repr}#{full_path(conn)}"
+      "#{scheme}://#{host}#{port_repr}#{conn.request_path}"
     end
   end
 
@@ -58,7 +58,7 @@ defmodule PlugLti do
   def verify_signature(conn) do
     try do
       signature = conn 
-        |> fetch_query_params
+        |> Conn.fetch_query_params
         |> ensure_has_signature
         |> signature_base_string
         |> hmac_signature
@@ -72,14 +72,14 @@ defmodule PlugLti do
       e in [NoSignature, SignatureMismatch] -> 
       Logger.info "PlugLti: " <> Exception.message(e)
       conn
-        |> put_resp_header("content-type", "text/plain; charset=utf-8")
-        |> send_resp(Plug.Conn.Status.code(:forbidden), 
+        |> Conn.put_resp_header("content-type", "text/plain; charset=utf-8")
+        |> Conn.send_resp(Plug.Conn.Status.code(:forbidden), 
           "Missing or mismatched OAuth signature in header")
-        |> halt
+        |> Conn.halt
 
       e in [MissingSecret] -> 
         Logger.info "PlugLti: " <> Exception.message(e)
-        halt(conn)
+        Conn.halt(conn)
 
      e -> raise e
     end
